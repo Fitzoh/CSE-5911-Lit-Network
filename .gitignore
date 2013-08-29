@@ -41,4 +41,4 @@ nosetests.xml
 
 # Project specific
 
-data/unprocessed_sources/*
+data/processed_sources/*
