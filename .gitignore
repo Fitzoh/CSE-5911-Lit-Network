@@ -35,6 +35,10 @@ nosetests.xml
 .pydevproject
 
 
+#General
+
+*.swp
+
 # Project specific
 
 data/unprocessed_sources/*
