@@ -2,7 +2,7 @@ import networkx as nx
 import csv
 from litnetwork import config as cfg
 
-def reduce_network(source_file=None, dest_file=None, hugo_file=None, cutoff=2):
+def reduce_network(source_file=None, dest_file=None, hugo_file=None, cutoff=3):
     if not source_file:
         source_file = cfg.compiled_data_file
     if not dest_file:
@@ -26,17 +26,29 @@ def read_network(source_file):
 
 def filter_network(unfiltered_network, cutoff, targets):
     permuations = [(first,second) for first in targets for second in targets if first != second]
-    
-
     for pair in permuations:
+        find_path(unfiltered_network, pair[0],pair[1], cutoff)
+
+def find_path(network, source, target, cutoff):
+    for i in range(cutoff):
         try:
-            paths = nx.all_simple_paths(unfiltered_network, pair[0], pair[1], cutoff=cutoff)
+            paths = nx.all_simple_paths(network, source, target, i + 1)
             paths = [list(path) for path in paths]
-            for path in paths:
-                if len(path)>0:
-                    print path
+            if paths:
+                return best_path(network, paths)
         except:
             pass
+    return None
+
+
+def best_path(network, paths):
+
+
+def get_confidence(network, path):
+    score  = 1
+    for i in range(len(path)):
+        score *= network[path[i]][path[i+1]]['score']
+    #print path
 
 if __name__=='__main__':
     reduce_network()
