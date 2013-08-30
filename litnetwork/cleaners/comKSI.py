@@ -1,4 +1,5 @@
 from litnetwork import config as cfg
+from litnetwork.cleaners import writer as w
 import os.path
 import csv
 import hugo_gene_symbols
@@ -35,10 +36,7 @@ def process_file(infile=None, outfile=None):
     with open(infile) as f:
         reader = csv.reader(f, delimiter='\t')
         data = [transform_line(line) for line in reader if transform_line(line)][1:]
-    #write all lines
-    with open(outfile, 'wb') as f:
-        writer = csv.writer(f,delimiter='\t')
-        writer.writerows(data)
+    w.write_file(data, outfile)
 
 if __name__=='__main__':
     process_file()
