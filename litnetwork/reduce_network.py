@@ -38,4 +38,5 @@ def filter_network(unfiltered_network, cutoff, targets):
         except:
             pass
 
-reduce_network()
+if __name__=='__main__':
+    reduce_network()
