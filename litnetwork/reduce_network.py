@@ -12,7 +12,11 @@ def reduce_network(source_file=None, dest_file=None, hugo_file=None, cutoff=3):
     with open(hugo_file) as f:
         hugo_targets = [line.strip() for line in f]
     unfiltered_net = read_network(source_file)
-    filter_network(unfiltered_net, cutoff, hugo_targets)
+    filtered_data = filter_network(unfiltered_net, cutoff, hugo_targets)
+    with open(cfg.reduced_data_file, 'wb') as f:
+        writer = csv.writer(f, delimiter='\t')
+        writer.writerow(['path','score','length','meta'])
+        writer.writerows(filtered_data)
 
 
 def read_network(source_file):
@@ -21,13 +25,18 @@ def read_network(source_file):
         entries = [line for line in reader if '#' not in line[0]]
     network = nx.DiGraph()
     for entry in entries:
-        network.add_edge(entry[0],entry[1],score=entry[2], meta=entry[3:])
-    return network 
+        network.add_edge(entry[0],entry[1],score=float(entry[2]), meta=entry[3:])
+    return network
 
 def filter_network(unfiltered_network, cutoff, targets):
     permuations = [(first,second) for first in targets for second in targets if first != second]
+    reduced = nx.DiGraph()
+    data = []
     for pair in permuations:
-        find_path(unfiltered_network, pair[0],pair[1], cutoff)
+        row = find_path(unfiltered_network, pair[0],pair[1], cutoff)
+        if row:
+            data.append(row)
+    return data
 
 def find_path(network, source, target, cutoff):
     for i in range(cutoff):
@@ -42,12 +51,21 @@ def find_path(network, source, target, cutoff):
 
 
 def best_path(network, paths):
-
+    sorted_paths = sorted(paths, key = lambda path: -1*get_confidence(network, path))
+    best_path = sorted_paths[0]
+    source = best_path[0]
+    target = best_path[-1]
+    score = get_confidence(network, best_path)
+    length = len(best_path)-1
+    #TODO modify meta entry w/ more info
+    meta = str(best_path)
+    return [source, target, score, length, meta]
 
 def get_confidence(network, path):
     score  = 1
-    for i in range(len(path)):
+    for i in range(len(path)-1):
         score *= network[path[i]][path[i+1]]['score']
+    return score
     #print path
 
 if __name__=='__main__':
