@@ -7,10 +7,9 @@ H = hugo_gene_symbols.load()
 
 
 
-#todo fix this
-import random
+#todo find a better scoring method? 
 def scoreFn(in_score):
-    return random.random()
+    return .3 
 
 
 #change line to desired format, return None if invalid line
