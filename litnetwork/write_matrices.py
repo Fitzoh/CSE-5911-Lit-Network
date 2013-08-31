@@ -28,7 +28,7 @@ def write_matrix(dest_file, attr_dict, targets, default):
         for row in targets:
             data = [row]
             for col in targets:
-                data.append(attr_dict.get((row,col),default))
+                data.append(attr_dict.get((col,row),default))
             writer.writerow(data)
 
 if __name__=='__main__':
