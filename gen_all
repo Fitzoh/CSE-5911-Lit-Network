@@ -1,0 +1,5 @@
+#! /usr/bin/env python
+import litnetwork as ln
+
+if __name__=='__main__':
+    ln.gen_all()
