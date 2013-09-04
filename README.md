@@ -12,7 +12,7 @@ This project is used to compile multiple protein networks into a single reduced 
 
 
 ##Setup
-*Install [networkx](http://networkx.github.io/)
-*Add the repo's directory to your $PYTHONPATH or $PATH
-*Make sure gen\_all is executable
-*Run ./gen\_all or python gen\_all
+* Install [networkx](http://networkx.github.io/)
+* Add the repo's directory to your $PYTHONPATH or $PATH
+* Make sure gen\_all is executable
+* Run ./gen\_all or python gen\_all
