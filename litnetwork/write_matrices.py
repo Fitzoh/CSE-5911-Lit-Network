@@ -4,7 +4,7 @@ import csv
 
 def make_matrices(source_file=None, length_matrix_file=None, score_matrix_file=None):
     if not source_file:
-        source_file = cfg.reduced_data_file
+        source_file = cfg.reduced_antibody_data_file
     if not length_matrix_file:
         length_matrix_file = cfg.length_matrix_file
     if not score_matrix_file:
