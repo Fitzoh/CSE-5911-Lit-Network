@@ -33,6 +33,7 @@ def get_hugo_to_antibody_dict():
     res = defaultdict(list)
     for entry in data:
         for hid in entry[1]:
-            res[hid].append(entry[0])
+            if '_p' in entry[0]:
+                res[hid].append(entry[0])
     return res
 
