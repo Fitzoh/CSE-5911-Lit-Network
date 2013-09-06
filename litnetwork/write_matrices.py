@@ -1,17 +1,15 @@
-import litnetwork.config as cfg
+from litnetwork import config as cfg
+from litnetwork import target_hugo as th
 import csv
 
-def make_matrices(source_file=None, target_hugo_file=None, length_matrix_file=None, score_matrix_file=None):
+def make_matrices(source_file=None, length_matrix_file=None, score_matrix_file=None):
     if not source_file:
         source_file = cfg.reduced_data_file
-    if not target_hugo_file:
-        target_hugo_file = cfg.target_hugo_file
     if not length_matrix_file:
         length_matrix_file = cfg.length_matrix_file
     if not score_matrix_file:
         score_matrix_file = cfg.score_matrix_file
-    with open(target_hugo_file) as f:
-        targets = set([line.strip() for line in f])
+    targets = th.get_id_list() 
     permuations = [(first,second) for first in targets for second in targets]
     with open(source_file) as f:
         reader = csv.reader(f, delimiter='\t')
