@@ -28,6 +28,10 @@ def get_id_list():
     data = get_data()
     return [hid for entry in data for hid in entry[1]]
 
+def get_ab_list():
+    data = get_data()
+    return [row[0] for row in data]
+
 def get_hugo_to_antibody_dict():
     data = get_data()
     res = defaultdict(list)
