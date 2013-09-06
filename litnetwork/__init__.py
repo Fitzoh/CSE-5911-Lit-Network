@@ -10,6 +10,10 @@ if not os.path.exists(cfg.processed_data_dir):
 
 def gen_all():
     cln.clean_all()
+    print 'cleaning all'
     cp.compile_all()
+    print 'compiling network'
     rn.reduce_network()
+    print 'reducing network'
     wm.make_matrices()
+    print 'making matrices'
