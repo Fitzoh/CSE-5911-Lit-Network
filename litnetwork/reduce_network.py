@@ -1,19 +1,17 @@
 import networkx as nx
 import csv
 from litnetwork import config as cfg
+from litnetwork import target_hugo as th
 
-def reduce_network(source_file=None, dest_file=None, hugo_file=None, cutoff=3):
+def reduce_network(source_file=None, dest_file=None, cutoff=3):
     if not source_file:
         source_file = cfg.compiled_data_file
     if not dest_file:
         dest_file = cfg.reduced_data_file
-    if not hugo_file:
-        hugo_file = cfg.target_hugo_file
-    with open(hugo_file) as f:
-        hugo_targets = [line.strip() for line in f]
+    hugo_targets = th.get_id_list()
     unfiltered_net = read_network(source_file)
     filtered_data = filter_network(unfiltered_net, cutoff, hugo_targets)
-    with open(cfg.reduced_data_file, 'wb') as f:
+    with open(dest_file, 'wb') as f:
         writer = csv.writer(f, delimiter='\t')
         writer.writerow(['#source','target','score','length','meta'])
         writer.writerows(filtered_data)
@@ -29,26 +27,30 @@ def read_network(source_file):
     return network
 
 def filter_network(unfiltered_network, cutoff, targets):
-    permuations = [(first,second) for first in targets for second in targets if first != second]
+    permutations = [(first,second) for first in targets for second in targets if first != second]
     reduced = nx.DiGraph()
     data = []
-    for pair in permuations:
-        row = find_path(unfiltered_network, pair[0],pair[1], cutoff)
+    for pair in permutations:
+        row = find_path(unfiltered_network, pair[0],pair[1], cutoff, targets)
         if row:
             data.append(row)
     return data
 
-def find_path(network, source, target, cutoff):
+def find_path(network, source, target, cutoff, hugo_targets):
     for i in range(cutoff):
         try:
             paths = nx.all_simple_paths(network, source, target, i + 1)
             paths = [list(path) for path in paths]
+            paths = [path for path in paths if is_legal_path(path, hugo_targets)]
             if paths:
                 return best_path(network, paths)
         except:
             pass
     return None
 
+def is_legal_path(path, hugo_targets):
+    intermediate_nodes = path[1:-1]
+    return set(intermediate_nodes).isdisjoint(set(hugo_targets))
 
 def best_path(network, paths):
     sorted_paths = sorted(paths, key = lambda path: -1*get_confidence(network, path))
@@ -57,7 +59,6 @@ def best_path(network, paths):
     target = best_path[-1]
     score = get_confidence(network, best_path)
     length = len(best_path)-1
-    #TODO modify meta entry w/ more info
     meta = str(best_path)
     return [source, target, score, length, meta]
 

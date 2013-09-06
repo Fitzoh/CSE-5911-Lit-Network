@@ -25,7 +25,7 @@ def transform_line(line):
 
 def process_file(infile=None, outfile=None):
     #find in and out file name if not given
-    basename, _ = os.path.splitext(__file__)
+    basename = os.path.split(os.path.splitext(__file__)[0])[1]
     if not infile:
         infile = os.path.join(cfg.unprocessed_data_dir, basename + '.csv')
     if not outfile:
