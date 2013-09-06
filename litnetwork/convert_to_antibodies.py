@@ -54,5 +54,6 @@ def filter_illegal_links(network):
             result.append(row)
     return result
 
+if __name__=='__main__':
+    convert_to_antibodies()
 
-convert_to_antibodies()
