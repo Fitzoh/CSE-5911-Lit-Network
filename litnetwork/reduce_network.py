@@ -40,16 +40,17 @@ def find_path(network, source, target, cutoff, hugo_targets):
     for i in range(cutoff):
         try:
             paths = nx.all_simple_paths(network, source, target, i + 1)
-            paths = [path for path in map(list,paths) if is_illegal_path(path, hugo_targets)]
+            paths = [list(path) for path in paths]
+            paths = [path for path in paths if is_legal_path(path, hugo_targets)]
             if paths:
                 return best_path(network, paths)
         except:
             pass
     return None
 
-def is_illegal_path(path, hugo_targets):
+def is_legal_path(path, hugo_targets):
     intermediate_nodes = path[1:-1]
-    return set(intermediate_nodes).isdisjoint(set(hugo_targetset)
+    return set(intermediate_nodes).isdisjoint(set(hugo_targets))
 
 def best_path(network, paths):
     sorted_paths = sorted(paths, key = lambda path: -1*get_confidence(network, path))
