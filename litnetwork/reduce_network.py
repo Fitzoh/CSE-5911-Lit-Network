@@ -1,16 +1,14 @@
 import networkx as nx
 import csv
 from litnetwork import config as cfg
+from litnetwork import target_hugo as th
 
-def reduce_network(source_file=None, dest_file=None, hugo_file=None, cutoff=3):
+def reduce_network(source_file=None, dest_file=None, cutoff=3):
     if not source_file:
         source_file = cfg.compiled_data_file
     if not dest_file:
         dest_file = cfg.reduced_data_file
-    if not hugo_file:
-        hugo_file = cfg.target_hugo_file
-    with open(hugo_file) as f:
-        hugo_targets = [line.strip() for line in f]
+    hugo_targets = th.get_id_list()
     unfiltered_net = read_network(source_file)
     filtered_data = filter_network(unfiltered_net, cutoff, hugo_targets)
     with open(cfg.reduced_data_file, 'wb') as f:
