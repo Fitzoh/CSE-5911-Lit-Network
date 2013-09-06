@@ -27,10 +27,10 @@ def read_network(source_file):
     return network
 
 def filter_network(unfiltered_network, cutoff, targets):
-    permuations = [(first,second) for first in targets for second in targets if first != second]
+    permutations = [(first,second) for first in targets for second in targets if first != second]
     reduced = nx.DiGraph()
     data = []
-    for pair in permuations:
+    for pair in permutations:
         row = find_path(unfiltered_network, pair[0],pair[1], cutoff, targets)
         if row:
             data.append(row)
