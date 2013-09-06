@@ -11,7 +11,7 @@ def reduce_network(source_file=None, dest_file=None, cutoff=3):
     hugo_targets = th.get_id_list()
     unfiltered_net = read_network(source_file)
     filtered_data = filter_network(unfiltered_net, cutoff, hugo_targets)
-    with open(cfg.reduced_data_file, 'wb') as f:
+    with open(dest_file, 'wb') as f:
         writer = csv.writer(f, delimiter='\t')
         writer.writerow(['#source','target','score','length','meta'])
         writer.writerows(filtered_data)
