@@ -9,7 +9,7 @@ def make_matrices(source_file=None, length_matrix_file=None, score_matrix_file=N
         length_matrix_file = cfg.length_matrix_file
     if not score_matrix_file:
         score_matrix_file = cfg.score_matrix_file
-    targets = th.get_id_list() 
+    targets = th.get_ab_list() 
     permuations = [(first,second) for first in targets for second in targets]
     with open(source_file) as f:
         reader = csv.reader(f, delimiter='\t')
