@@ -6,8 +6,8 @@ import hugo_gene_symbols
 H = hugo_gene_symbols.load()
 
 
-#confidence based on category
 def scoreFn(category):
+    '''Retuns confidence score based on category.'''
     if '1' in category:
         return .1
     if '2' in category:
@@ -19,8 +19,11 @@ def scoreFn(category):
     return 0
 
 
-#change line to desired format, return None if invalid line
 def transform_line(line):
+    '''Reformats line, returns None if line is invalid.
+    
+    Line is invalid if kinase or gene do not correspond to a single
+    Hugo id.'''
     kinase = H.find_sym(line[0])
     gene = H.find_sym(line[2])
     score = scoreFn(line[4])
@@ -31,6 +34,7 @@ def transform_line(line):
 
 
 def process_file(infile=None, outfile=None):
+    '''Processes and writes source file to cleaned file.'''
     #find in and out file name if not given
     basename = os.path.split(os.path.splitext(__file__)[0])[1]
     if not infile:

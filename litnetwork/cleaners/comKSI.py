@@ -9,11 +9,18 @@ H = hugo_gene_symbols.load()
 
 #todo find a better scoring method? 
 def scoreFn(in_score):
+    '''Returns a score for each line.
+    
+    Currently .3 for all entries in file.'''
     return .3 
 
 
 #change line to desired format, return None if invalid line
 def transform_line(line):
+    '''Reformats line, returns None if line is invalid.
+            
+    Line is invalid if kinase or gene do not correspond to a single
+    Hugo id.'''
     kinase = H.find_sym(line[0])
     gene = H.find_sym(line[1])
     score = scoreFn(line[2])
@@ -24,6 +31,7 @@ def transform_line(line):
 
 
 def process_file(infile=None, outfile=None):
+    '''Processes and writes source file to cleaned file.'''
     #find in and out file name if not given
     basename = os.path.split(os.path.splitext(__file__)[0])[1]
     if not infile:
