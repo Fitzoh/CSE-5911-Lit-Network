@@ -10,6 +10,7 @@ if not os.path.exists(cfg.processed_data_dir):
     os.makedirs(cfg.processed_data_dir)
 
 def gen_all():
+    '''Runs entire workflow from uncleaed source files to adjacency matrices.'''
     cln.clean_all()
     print 'cleaning all'
     cp.compile_all()
