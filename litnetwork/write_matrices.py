@@ -3,12 +3,14 @@ from litnetwork import target_hugo as th
 import csv
 
 def make_matrices(source_file=None, length_matrix_file=None, score_matrix_file=None):
+    '''Creates adjacency matrix length and score files for the reduced antibody network.'''
     if not source_file:
         source_file = cfg.reduced_antibody_data_file
     if not length_matrix_file:
         length_matrix_file = cfg.length_matrix_file
     if not score_matrix_file:
         score_matrix_file = cfg.score_matrix_file
+    #get target list and create all permutations
     targets = th.get_ab_list() 
     permuations = [(first,second) for first in targets for second in targets]
     with open(source_file) as f:
@@ -20,6 +22,7 @@ def make_matrices(source_file=None, length_matrix_file=None, score_matrix_file=N
     write_matrix(length_matrix_file, length_dict, targets, -1)
 
 def write_matrix(dest_file, attr_dict, targets, default):
+    '''Writes the adjacency matrix of attr_dict to dest_file.'''
     with open(dest_file, 'wb') as f:
         writer = csv.writer(f, delimiter='\t')
         writer.writerow(['']+list(targets))
