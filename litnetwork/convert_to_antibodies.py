@@ -6,6 +6,13 @@ from collections import defaultdict
 from IPython import embed
 
 def convert_to_antibodies(source_file=None, dest_file=None):
+    '''Processes reduced network file, replacing hugo id's with antibody id's.
+
+    Further network reduction occurs in this step.
+    Edges which map from the an antibody to itself are disallowed, and if there are
+    multiple edges between antibody a and antibody b, the shortest edge with the best 
+    score is the only one that is kept.
+    '''
     if not source_file:
         source_file = cfg.reduced_data_file
     if not dest_file:
@@ -21,11 +28,18 @@ def convert_to_antibodies(source_file=None, dest_file=None):
         writer.writerows(filtered_ab_net)
     
 def load_file(source_file):
+    '''Loads reduced network.'''
     with open(source_file) as f:
         reader = csv.reader(f, delimiter='\t')
         return [line for line in reader if '#' not in line[0]]
 
 def make_substitutions(hugo_dict, source_net):
+    '''Substitute Hugo Id's with corresponding antibody id's.
+    
+    Not a simple 1-1 substitution, as it is possible for a Hugo ID
+    to map to multiple antibodies. Due to this, a new row is created for 
+    every possible antibody mapping.
+    '''
     result = []
     for line in source_net:
         sources = hugo_dict[line[0]]
@@ -34,6 +48,14 @@ def make_substitutions(hugo_dict, source_net):
     return result
 
 def merge_antibodies(network):
+    '''Merge duplicate antibodies into one row.
+
+    After hugo -> antibody substitutions occur, it is possible for duplicate
+    source/target entries to exist. This method locates the duplicates,
+    and selects the best entry that exists for that source/target pair.
+    The best entry is path with the shortest path with the best score,
+    with path length having priority.
+    '''
     temp_dict = defaultdict(list)    
     for row in network:
         key = (row[0],row[1])
@@ -42,12 +64,18 @@ def merge_antibodies(network):
     result_dict = {}
     for key in temp_dict:
         values = temp_dict[key]
+        #sort by path length, then score
         sorted_paths = sorted(values,key = lambda x: (float(x[1]),-float(x[0])))
         result_dict[key] = sorted_paths[0]
     return [list(key)+result_dict[key] for key in result_dict]
 
 
 def filter_illegal_links(network):
+    '''Removes 'illegal' entries from network.
+    
+    Disallows entries where the same antibody is the source/target,
+    and disallows non-phosphorylized entries ('_p' not in antibody name').
+    '''
     result = []
     for row in network:
         if row[0] != row[1] and '_p' in row[0] and '_p' in row[1]:
